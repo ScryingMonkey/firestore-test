@@ -8,14 +8,14 @@ var config = {
   messagingSenderId: "455825128064"
 };
 firebase.initializeApp(config);
-firebase.firestore().enablePersistence()
-  .catch(function(err) {
-    if (err.code == 'failed-precondition') {
-      console.log("...failed precondition for offline persistence.")
-    } else if (err.code == 'unimplemented') {
-      console.log("...the current browser does not support all of the features required to enable persistence.");
-    }
-});
+// firebase.firestore().enablePersistence()
+//   .catch(function(err) {
+//     if (err.code == 'failed-precondition') {
+//       console.log("...failed precondition for offline persistence.")
+//     } else if (err.code == 'unimplemented') {
+//       console.log("...the current browser does not support all of the features required to enable persistence.");
+//     }
+// });
 let db = firebase.firestore();
 let displayData = [];
 
@@ -46,7 +46,7 @@ function set(){
         hotDogStatus: textToSet
       })
       .then((res) => {
-        add();
+        add(textToSet);
         console.log("Data set! ["+textToSet+"]")
       })
       .catch((err) => console.log("Got an error: ", err));
@@ -58,7 +58,7 @@ function set(){
     console.log("...text to set is blank.");
   }
 }
-function add(){
+function add(textToSet){
   console.log("> add()");
   if(inputTextField.value){
     let textToSet = inputTextField.value;
@@ -85,6 +85,14 @@ function load() {
     }
   })
   .catch((err) => console.log("Got an error: ", err));
+}
+function remove(id,collection=hotdogResultsRef){
+  console.log("> remove(collection,id)");
+  collection.doc(id).delete().then(function() {
+    console.log("Document ["+id+"] successfully deleted!");
+  }).catch(function(error) {
+    console.error("Error removing document ["+id+"]: ", error);
+  });
 }
 function getRealtimeUpdates() {
   // bind outputHeader to hotDogStatus
@@ -129,8 +137,13 @@ function buildTableHtml(displayData){
     for (let k in x){
       tableHtml += "<td>"+x[k]+"</td>";
     }
+    let bid = "del_"+x["id"];
+    tableHtml += "<td><button id="+bid+" onclick='remove(\""+x["id"]+"\")'>remove</button></td>";
     tableHtml += "</tr>";
     // console.log("...adding row: ",tableHtml);
+    // const delButton = document.getElementById(bid);
+
+    // delButton.addEventListener("click", remove, hotdogResultsRef, x["id"]);
   });
   return tableHtml;
 }
