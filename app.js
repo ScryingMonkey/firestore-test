@@ -8,14 +8,14 @@ var config = {
   messagingSenderId: "455825128064"
 };
 firebase.initializeApp(config);
-// firebase.firestore().enablePersistence()
-//   .catch(function(err) {
-//     if (err.code == 'failed-precondition') {
-//       console.log("...failed precondition for offline persistence.")
-//     } else if (err.code == 'unimplemented') {
-//       console.log("...the current browser does not support all of the features required to enable persistence.");
-//     }
-// });
+firebase.firestore().enablePersistence()
+  .catch(function(err) {
+    if (err.code == 'failed-precondition') {
+      console.log("...failed precondition for offline persistence.")
+    } else if (err.code == 'unimplemented') {
+      console.log("...the current browser does not support all of the features required to enable persistence.");
+    }
+});
 let db = firebase.firestore();
 let displayData = [];
 
@@ -60,8 +60,7 @@ function set(){
 }
 function add(textToSet){
   console.log("> add()");
-  if(inputTextField.value){
-    let textToSet = inputTextField.value;
+  if(textToSet){
     console.log("...received value ["+textToSet+"] from user.  Sending to Firestore.");
     try {
       hotdogResultsRef.add({status:textToSet})
@@ -125,8 +124,11 @@ function getRealtimeUpdates() {
     }
   });
 }
+function updateTable() {
+
+}
 function buildTableHtml(displayData){
-  let headers = ["number",...Object.keys(displayData[0])];
+  let headers = ["number",...Object.keys(displayData[0]),"actions"];
   let tableHtml = '<tr>';
   headers.forEach(h => {
     tableHtml += "<th>"+h+"</th>";
@@ -140,10 +142,6 @@ function buildTableHtml(displayData){
     let bid = "del_"+x["id"];
     tableHtml += "<td><button id="+bid+" onclick='remove(\""+x["id"]+"\")'>remove</button></td>";
     tableHtml += "</tr>";
-    // console.log("...adding row: ",tableHtml);
-    // const delButton = document.getElementById(bid);
-
-    // delButton.addEventListener("click", remove, hotdogResultsRef, x["id"]);
   });
   return tableHtml;
 }
