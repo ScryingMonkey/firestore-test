@@ -25,24 +25,9 @@ inputTextField.addEventListener("keyup", (event)=>{
     saveButton.click();
   }
 });
+const dataTable = document.querySelector("#dataTable");
 getRealtimeUpdates();
-setup();
 
-function setup(){
-  console.log("> setup()");
-  let dummyData = {
-    dummyK_1 : "dummyV_1",
-    dummyK_2 : "dummyV_2",
-    dummyK_3 : "dummyV_3",
-  };
-    
-  // set db doc to dummyData
-  // set local data obj to sync to database
-
-  // Tie dom output to data obj
-
-
-}
 function set(){
   console.log("> set()");
   if(inputTextField.value){
@@ -98,20 +83,46 @@ function getRealtimeUpdates() {
   hotdogDocRef.onSnapshot((doc)=>{
     if (doc && doc.exists) {
       const myData = doc.data();
-      console.log("...outputHeader updated: ", doc);
+      console.log("...outputHeader updated: ["+myData.hotDogStatus+"].");
       outputHeader.innerText = "Hot Dog Status: " + myData.hotDogStatus;
     }
   });
   // bind data to results
-  hotdogResultsRef.get().then(res => {
+  hotdogResultsRef.onSnapshot({includeMetadataChanges:true},res => {
     if (res.docs) {
-      displayData = res.docs;
+      displayData = res.docs.map(doc => {
+        return {
+          id:doc.id,
+          status:doc._document.data.internalValue.root.value.internalValue,
+          fromCache:doc._fromCache,
+          hasPendingWrites:doc._hasPendingWrites,
+        }
+      });
       console.log("...displayData updated: ");
       console.dir(displayData);
-      
+      let tableHtml = buildTableHtml(displayData);
+      dataTable.innerText = "";
+      dataTable.innerHTML = tableHtml;
     } else {
       console.log("...res did not exist.");
       console.dir(res);
     }
   });
+}
+function buildTableHtml(displayData){
+  let headers = ["number",...Object.keys(displayData[0])];
+  let tableHtml = '<tr>';
+  headers.forEach(h => {
+    tableHtml += "<th>"+h+"</th>";
+  });
+  tableHtml += "</tr>";
+  displayData.forEach((x,i) => {
+    tableHtml += "<tr><td>"+i+"</td>";
+    for (let k in x){
+      tableHtml += "<td>"+x[k]+"</td>";
+    }
+    tableHtml += "</tr>";
+    // console.log("...adding row: ",tableHtml);
+  });
+  return tableHtml;
 }
