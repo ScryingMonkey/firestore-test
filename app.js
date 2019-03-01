@@ -8,6 +8,14 @@ var config = {
   messagingSenderId: "455825128064"
 };
 firebase.initializeApp(config);
+firebase.firestore().enablePersistence()
+  .catch(function(err) {
+    if (err.code == 'failed-precondition') {
+      console.log("...failed precondition for offline persistence.")
+    } else if (err.code == 'unimplemented') {
+      console.log("...the current browser does not support all of the features required to enable persistence.");
+    }
+});
 let db = firebase.firestore();
 let displayData = [];
 
@@ -125,4 +133,8 @@ function buildTableHtml(displayData){
     // console.log("...adding row: ",tableHtml);
   });
   return tableHtml;
+}
+function addTableRow(row){
+
+  dataTable.innerHTML += rowHtml;
 }

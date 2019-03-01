@@ -1,21 +1,35 @@
 <html>
-    <head>
-        <title>Hot Dogs == sandwich?</title>
-        <!-- <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js"></script> -->
-        <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase-firestore.js"></script>
-    </head>
-    <body>
-        <h1 id="hotDogOutput">Hot Dog Status: </h1>
-        <input type="textfield" id="latestHotDogStatus" />
-        <button id="saveButton">Save</button>
+  <head>
+    <title>Hot Dogs == sandwich?</title>
+    <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.4/firebase-firestore.js"></script>
+    <style>
+      table {
+        width: 80%;
+        border: 1px solid lightskyblue;
+        border-collapse: collapse;
+      }
+      th {
+        background-color: lightskyblue;
+      }
+      th, tr {
+        text-align: left;
+        height: 40px;
+        vertical-align: center;
+        border-bottom: 1px solid #ddd;
+      }
 
-        <br><br>
-        <div>
-            <h1>Hot dog results:</h1>
-            <table id="dataTable" style="border-bottom: 1px solid #ddd;"></table>
-
-        </div>
-        <script src="./app.js"></script>
-    </body>
+    </style>
+  </head>
+  <body>
+    <h1 id="hotDogOutput">Hot Dog Status: </h1>
+    <input type="textfield" id="latestHotDogStatus" />
+    <button id="saveButton">Save</button>
+    <br><br>
+    <div>
+      <h1>Hot dog results:</h1>
+      <table id="dataTable"></table>
+    </div>
+    <script src="./app.js"></script>
+  </body>
 </html>
